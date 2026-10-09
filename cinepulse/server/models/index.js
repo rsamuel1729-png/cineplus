@@ -1,0 +1,19 @@
+const mongoose = require('mongoose');
+const {Schema} = mongoose;
+const User = mongoose.model('User', new Schema({name:{type:String,required:true,trim:true,maxlength:80},email:{type:String,required:true,unique:true,lowercase:true,trim:true},passwordHash:{type:String,required:true},role:{type:String,enum:['user','admin'],default:'user'},watchlist:[{type:Schema.Types.ObjectId,ref:'Movie'}]}, {timestamps:true}));
+const Movie = mongoose.model('Movie',new Schema({title:{type:String,required:true,trim:true,maxlength:120},description:{type:String,default:'',maxlength:2000},genres:[{type:String,trim:true}],year:{type:Number,min:1888,max:2100},poster:{type:String,default:''}}, {timestamps:true}));
+const reviewSchema = new Schema({movie:{type:Schema.Types.ObjectId,ref:'Movie',required:true,index:true},user:{type:Schema.Types.ObjectId,ref:'User',required:true},rating:{type:Number,required:true,min:1,max:5,validate:Number.isInteger},review:{type:String,required:true,trim:true,minlength:5,maxlength:1000},sentiment:{type:Number,default:0,min:-1,max:1},helpful:{type:Number,default:0},unhelpful:{type:Number,default:0}}, {timestamps:true});
+reviewSchema.index({movie:1,user:1},{unique:true});
+// Older versions stored movie titles and had no user reference. Keep those
+// records intact, but exclude them before population and rating calculations.
+reviewSchema.pre('find', function () {
+  this.where({$and: [
+    {movie: {$type: 'objectId'}},
+    {user: {$type: 'objectId'}}
+  ]});
+});
+const Review = mongoose.model('Review',reviewSchema);
+const voteSchema = new Schema({review:{type:Schema.Types.ObjectId,ref:'Review',required:true},user:{type:Schema.Types.ObjectId,ref:'User',required:true},value:{type:Number,enum:[1,-1],required:true}},{timestamps:true});
+voteSchema.index({review:1,user:1},{unique:true});
+const Vote = mongoose.model('Vote',voteSchema);
+module.exports={User,Movie,Review,Vote};
