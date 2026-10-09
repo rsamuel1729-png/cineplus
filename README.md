@@ -10,7 +10,7 @@ Node.js 20+, MongoDB Community Server running locally, npm.
 1. `cd cinepulse\server`
 2. `npm install`
 3. Copy `.env.example` to `.env` and **replace JWT_SECRET with a random 32+ character value**. Keep `MONGO_URI=mongodb://127.0.0.1:27017/cinepulse`.
-4. `npm run seed` (inserts 8 sample movies; does not delete your existing legacy reviews).
+4. `npm run seed` (adds a curated catalog across comedy, family, food, romance, action, mystery, documentary, nostalgia, and other genres; existing movies and reviews are preserved).
 5. `npm run dev` (expect API listening on 5000).
 6. In another terminal: `cd cinepulse\client`, `npm install`, `npm run dev`.
 7. Open `http://localhost:5173` (or `http://127.0.0.1:5173`).
@@ -20,7 +20,7 @@ Node.js 20+, MongoDB Community Server running locally, npm.
 ## Features
 - Phase 1: register/login with bcrypt password hashes and JWT, seeded movie catalog, admin create/delete movie endpoints, movie search/genre filter/sorting, review create/read/edit/delete, watchlist, rating distribution and percentages.
 - Phase 2: Bayesian weighted rating (prior=10, baseline=global review mean or 3.5), exponentially decayed trending score (lambda=.15 per day), Wilson lower bound (z=1.96) for review helpfulness, analytics API/dashboard.
-- Phase 3: recommendations based on genre-vector cosine similarity of movies rated 4+ stars, similar-movie discovery via same recommendation logic, human-readable shared-genre explanations, transparent lexicon-based sentiment score. **Sentiment is a simple deterministic baseline, NOT a pretrained AI model.**
+- Phase 3: personalized recommendations based on genre-vector cosine similarity of movies rated 4+ stars; mood picks based on the viewer's current mood and desired movie vibe; human-readable explanations; transparent lexicon-based sentiment score. **Sentiment is a simple deterministic baseline, NOT a pretrained AI model.**
 
 ## Admin setup (no public admin signup)
 Register a normal user, then in `mongosh` for the same database run:
@@ -28,7 +28,7 @@ Register a normal user, then in `mongosh` for the same database run:
 Log out and log back in for the role to be reflected in the JWT. Only do this on a database you administer.
 
 ## API endpoints
-`GET /api/health`; `POST /api/auth/register`, `/api/auth/login`; `GET /api/auth/me`; `GET /api/movies`, `/api/movies/:id`; admin `POST /api/movies`, `PUT /api/movies/:id`, `DELETE /api/movies/:id`; `GET /api/reviews`, authenticated `POST /api/reviews`, `PUT /api/reviews/:id`, `DELETE /api/reviews/:id`, `POST /api/reviews/:id/vote`; `GET/POST/DELETE /api/watchlist`; `GET /api/recommendations`, `/api/analytics`.
+`GET /api/health`; `POST /api/auth/register`, `/api/auth/login`; `GET /api/auth/me`; `GET /api/movies`, `/api/movies/:id`; admin `POST /api/movies`, `PUT /api/movies/:id`, `DELETE /api/movies/:id`; `GET /api/reviews`, authenticated `POST /api/reviews`, `PUT /api/reviews/:id`, `DELETE /api/reviews/:id`, `POST /api/reviews/:id/vote`; `GET/POST/DELETE /api/watchlist`; `GET /api/recommendations`; `GET /api/mood-recommendations?mood=stressed&intent=relax`; `GET /api/analytics`.
 
 ## Limitations and next steps
 - The sentiment model is a small English keyword lexicon. For real NLP, replace with a separately tested model/service.

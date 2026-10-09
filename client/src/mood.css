@@ -1,0 +1,8 @@
+.mood-panel{margin:24px 0 34px}
+.mood-panel h3{font:700 23px 'Space Grotesk';margin:8px 0}
+.mood-label{font-size:11px;letter-spacing:2px;font-weight:700;color:#ffcb75}
+.mood-panel>.muted{max-width:650px;line-height:1.6}
+.mood-form{display:grid;grid-template-columns:minmax(200px,1fr) minmax(220px,1fr) auto;align-items:end;gap:14px;margin-top:20px}
+.mood-form button{height:46px;white-space:nowrap;margin:0}
+.mood-form label{font-size:13px}
+@media(max-width:760px){.mood-form{grid-template-columns:1fr}.mood-form button{width:100%}}
