@@ -10,7 +10,7 @@ Node.js 20+, MongoDB Community Server running locally, npm.
 1. `cd cinepulse\server`
 2. `npm install`
 3. Copy `.env.example` to `.env` and **replace JWT_SECRET with a random 32+ character value**. Keep `MONGO_URI=mongodb://127.0.0.1:27017/cinepulse`.
-4. `npm run seed` (adds a curated catalog across comedy, family, food, romance, action, mystery, documentary, nostalgia, and other genres; existing movies and reviews are preserved).
+4. `npm run seed` (adds a curated catalog across comedy, family, food, romance, action, mystery, documentary, nostalgia, and other genres, then refreshes those seeded titles with poster and gallery URLs; reviews are preserved).
 5. `npm run dev` (expect API listening on 5000).
 6. In another terminal: `cd cinepulse\client`, `npm install`, `npm run dev`.
 7. Open `http://localhost:5173` (or `http://127.0.0.1:5173`).
@@ -23,9 +23,9 @@ Node.js 20+, MongoDB Community Server running locally, npm.
 - Phase 3: personalized recommendations based on genre-vector cosine similarity of movies rated 4+ stars; mood picks based on the viewer's current mood and desired movie vibe; human-readable explanations; transparent lexicon-based sentiment score. **Sentiment is a simple deterministic baseline, NOT a pretrained AI model.**
 
 ## Admin setup (no public admin signup)
-Register a normal user, then in `mongosh` for the same database run:
+Use the separate **Admin Login** button in the site navigation to sign in with an admin account. There is no public admin signup. First register a normal account, then in `mongosh` for the same database run:
 `db.users.updateOne({email:'your-email@example.com'},{$set:{role:'admin'}})`
-Log out and log back in for the role to be reflected in the JWT. Only do this on a database you administer.
+Log out and sign in again through **Admin Login** for the role to be reflected in the JWT. Only do this on a database you administer.
 
 ## API endpoints
 `GET /api/health`; `POST /api/auth/register`, `/api/auth/login`; `GET /api/auth/me`; `GET /api/movies`, `/api/movies/:id`; admin `POST /api/movies`, `PUT /api/movies/:id`, `DELETE /api/movies/:id`; `GET /api/reviews`, authenticated `POST /api/reviews`, `PUT /api/reviews/:id`, `DELETE /api/reviews/:id`, `POST /api/reviews/:id/vote`; `GET/POST/DELETE /api/watchlist`; `GET /api/recommendations`; `GET /api/mood-recommendations?mood=stressed&intent=relax`; `GET /api/analytics`.
